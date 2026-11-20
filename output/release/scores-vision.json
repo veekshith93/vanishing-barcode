@@ -1,0 +1,376 @@
+{
+  "source": "model_run",
+  "model": "gpt-6.2-sol",
+  "settings": {
+    "backend": "codex",
+    "mode": "image+question",
+    "format_instructions": {
+      "visibility": "Reply with one word: Yes or No.",
+      "repair": "Reply with just one of the listed choices.",
+      "placement": "Reply with just one of the listed choices."
+    },
+    "cli_version": "codex-cli 0.170.0",
+    "reasoning_effort": "low",
+    "cli_flags": [
+      "--json",
+      "--color",
+      "never",
+      "--ephemeral",
+      "--ignore-user-config",
+      "--ignore-rules",
+      "--sandbox",
+      "read-only",
+      "--skip-git-repo-check",
+      "--disable",
+      "memories",
+      "--disable",
+      "plugins",
+      "--disable",
+      "apps",
+      "--disable",
+      "shell_tool",
+      "--disable",
+      "image_generation",
+      "--disable",
+      "multi_agent",
+      "--enable",
+      "skip_host_skill_discovery",
+      "-c",
+      "web_search=\"disabled\"",
+      "-c",
+      "mcp_servers={}",
+      "-c",
+      "project_doc_max_bytes=0",
+      "-c",
+      "approval_policy=\"never\""
+    ]
+  },
+  "started_utc": "2026-11-20T13:51:24.316473+00:00",
+  "dataset": "release",
+  "seed": 41403,
+  "pack_sha256": "cc206756257e5cb71e1322853da67da48523a903051d140d2d27c4f206f5da51",
+  "scores": {
+    "items": 10,
+    "correct_items": 10,
+    "item_accuracy": 1.0,
+    "pairs": 5,
+    "correct_pairs": 5,
+    "pair_accuracy": 1.0,
+    "incorrect": 0,
+    "parse_error": 0,
+    "request_error": 0,
+    "missing_reply": 0
+  },
+  "visibility_outcomes": {
+    "false_pass": 0,
+    "covered_cases": 4,
+    "false_pass_rate": 0.0,
+    "false_reject": 0,
+    "clear_cases": 2,
+    "false_reject_rate": 0.0,
+    "manual_review": 0,
+    "visibility_cases": 6
+  },
+  "by_task_type": {
+    "placement": {
+      "items": 2,
+      "correct_items": 2,
+      "item_accuracy": 1.0,
+      "pairs": 1,
+      "correct_pairs": 1,
+      "pair_accuracy": 1.0,
+      "incorrect": 0,
+      "parse_error": 0,
+      "request_error": 0,
+      "missing_reply": 0
+    },
+    "repair": {
+      "items": 2,
+      "correct_items": 2,
+      "item_accuracy": 1.0,
+      "pairs": 1,
+      "correct_pairs": 1,
+      "pair_accuracy": 1.0,
+      "incorrect": 0,
+      "parse_error": 0,
+      "request_error": 0,
+      "missing_reply": 0
+    },
+    "visibility": {
+      "items": 6,
+      "correct_items": 6,
+      "item_accuracy": 1.0,
+      "pairs": 3,
+      "correct_pairs": 3,
+      "pair_accuracy": 1.0,
+      "incorrect": 0,
+      "parse_error": 0,
+      "request_error": 0,
+      "missing_reply": 0
+    }
+  },
+  "items": [
+    {
+      "raw_reply": "Yes",
+      "tool_item_types": [],
+      "usage": {
+        "input_tokens": 13354,
+        "cached_input_tokens": 11136,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      },
+      "seconds": 7.762,
+      "sent_image_sha256": "855619cd4f36df2cccf385bae0e2d55e09aeac38991229a301d7369eb0793e1b",
+      "id": "11ddff773704",
+      "pair_id": "order",
+      "pair_type": "fold-order",
+      "task_type": "visibility",
+      "image_sha256": "855619cd4f36df2cccf385bae0e2d55e09aeac38991229a301d7369eb0793e1b",
+      "expected": "yes",
+      "parsed": "yes",
+      "status": "correct"
+    },
+    {
+      "raw_reply": "No",
+      "tool_item_types": [],
+      "usage": {
+        "input_tokens": 13354,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      },
+      "seconds": 6.404,
+      "sent_image_sha256": "5b32e71f6ff99f0f2ab18620a2f1d99b5fe61016b5a86f5754c4599e9b06cfde",
+      "id": "69acd30ebf3c",
+      "pair_id": "order",
+      "pair_type": "fold-order",
+      "task_type": "visibility",
+      "image_sha256": "5b32e71f6ff99f0f2ab18620a2f1d99b5fe61016b5a86f5754c4599e9b06cfde",
+      "expected": "no",
+      "parsed": "no",
+      "status": "correct"
+    },
+    {
+      "raw_reply": "No",
+      "tool_item_types": [],
+      "usage": {
+        "input_tokens": 13354,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      },
+      "seconds": 6.458,
+      "sent_image_sha256": "0a3309753e82726a0f68a6aa3508b2a43955f128b16eb663b1e75fbbea9130f8",
+      "id": "785b3252ec30",
+      "pair_id": "position",
+      "pair_type": "artwork-position",
+      "task_type": "visibility",
+      "image_sha256": "0a3309753e82726a0f68a6aa3508b2a43955f128b16eb663b1e75fbbea9130f8",
+      "expected": "no",
+      "parsed": "no",
+      "status": "correct"
+    },
+    {
+      "raw_reply": "Yes",
+      "tool_item_types": [],
+      "usage": {
+        "input_tokens": 13354,
+        "cached_input_tokens": 9856,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 34,
+        "reasoning_output_tokens": 27
+      },
+      "seconds": 6.444,
+      "sent_image_sha256": "be4186111d40069845fc6d8195d0eef248f8a2900421e4c8cc734d145d6d427a",
+      "id": "6d6182e5e1d3",
+      "pair_id": "position",
+      "pair_type": "artwork-position",
+      "task_type": "visibility",
+      "image_sha256": "be4186111d40069845fc6d8195d0eef248f8a2900421e4c8cc734d145d6d427a",
+      "expected": "yes",
+      "parsed": "yes",
+      "status": "correct"
+    },
+    {
+      "raw_reply": "No",
+      "tool_item_types": [],
+      "usage": {
+        "input_tokens": 13356,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      },
+      "seconds": 5.139,
+      "sent_image_sha256": "fba69481bf08c030826064b69d5c8b058b7445e6a2e717230aeed8179499d66c",
+      "id": "29a12ec4697e",
+      "pair_id": "color",
+      "pair_type": "cosmetic",
+      "task_type": "visibility",
+      "image_sha256": "fba69481bf08c030826064b69d5c8b058b7445e6a2e717230aeed8179499d66c",
+      "expected": "no",
+      "parsed": "no",
+      "status": "correct"
+    },
+    {
+      "raw_reply": "No",
+      "tool_item_types": [],
+      "usage": {
+        "input_tokens": 13350,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      },
+      "seconds": 5.51,
+      "sent_image_sha256": "2ddb12cce913fd9700f9e07775704ee28fabd3c2f42876f65910c717c52f23d8",
+      "id": "b10da8b52304",
+      "pair_id": "color",
+      "pair_type": "cosmetic",
+      "task_type": "visibility",
+      "image_sha256": "2ddb12cce913fd9700f9e07775704ee28fabd3c2f42876f65910c717c52f23d8",
+      "expected": "no",
+      "parsed": "no",
+      "status": "correct"
+    },
+    {
+      "raw_reply": "P",
+      "tool_item_types": [],
+      "usage": {
+        "input_tokens": 13370,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      },
+      "seconds": 5.443,
+      "sent_image_sha256": "cf1dfd78a5d6caf991a997d4ea271d739580766d20f1704e411d472ad6f69400",
+      "id": "ae41170e35e9",
+      "pair_id": "repair-location",
+      "pair_type": "repair-positions",
+      "task_type": "repair",
+      "image_sha256": "cf1dfd78a5d6caf991a997d4ea271d739580766d20f1704e411d472ad6f69400",
+      "expected": "p",
+      "parsed": "p",
+      "status": "correct"
+    },
+    {
+      "raw_reply": "Q",
+      "tool_item_types": [],
+      "usage": {
+        "input_tokens": 13368,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      },
+      "seconds": 5.498,
+      "sent_image_sha256": "d3e90a77f7c1bbc455a64002799812d284d37fe543f80e852d37a05baf0d5da1",
+      "id": "58ad7dd4e33d",
+      "pair_id": "repair-location",
+      "pair_type": "repair-positions",
+      "task_type": "repair",
+      "image_sha256": "d3e90a77f7c1bbc455a64002799812d284d37fe543f80e852d37a05baf0d5da1",
+      "expected": "q",
+      "parsed": "q",
+      "status": "correct"
+    },
+    {
+      "raw_reply": "Left",
+      "tool_item_types": [],
+      "usage": {
+        "input_tokens": 13372,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      },
+      "seconds": 5.441,
+      "sent_image_sha256": "1c03649a8ae75c92945d3f438e92a03b069cad63109668b1cffd42869a9a808e",
+      "id": "b45cc4430e28",
+      "pair_id": "face",
+      "pair_type": "marked-face",
+      "task_type": "placement",
+      "image_sha256": "1c03649a8ae75c92945d3f438e92a03b069cad63109668b1cffd42869a9a808e",
+      "expected": "left",
+      "parsed": "left",
+      "status": "correct"
+    },
+    {
+      "raw_reply": "Right",
+      "tool_item_types": [],
+      "usage": {
+        "input_tokens": 13372,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5,
+        "reasoning_output_tokens": 0
+      },
+      "seconds": 4.957,
+      "sent_image_sha256": "1b08315850321523c2ff851de52a841bb50659762c6f4c159306dce087919822",
+      "id": "a20bbc4d409f",
+      "pair_id": "face",
+      "pair_type": "marked-face",
+      "task_type": "placement",
+      "image_sha256": "1b08315850321523c2ff851de52a841bb50659762c6f4c159306dce087919822",
+      "expected": "right",
+      "parsed": "right",
+      "status": "correct"
+    }
+  ],
+  "pairs": [
+    {
+      "pair_id": "order",
+      "task_ids": [
+        "11ddff773704",
+        "69acd30ebf3c"
+      ],
+      "type": "fold-order",
+      "task_type": "visibility",
+      "correct": true
+    },
+    {
+      "pair_id": "position",
+      "task_ids": [
+        "785b3252ec30",
+        "6d6182e5e1d3"
+      ],
+      "type": "artwork-position",
+      "task_type": "visibility",
+      "correct": true
+    },
+    {
+      "pair_id": "color",
+      "task_ids": [
+        "29a12ec4697e",
+        "b10da8b52304"
+      ],
+      "type": "cosmetic",
+      "task_type": "visibility",
+      "correct": true
+    },
+    {
+      "pair_id": "repair-location",
+      "task_ids": [
+        "ae41170e35e9",
+        "58ad7dd4e33d"
+      ],
+      "type": "repair-positions",
+      "task_type": "repair",
+      "correct": true
+    },
+    {
+      "pair_id": "face",
+      "task_ids": [
+        "b45cc4430e28",
+        "a20bbc4d409f"
+      ],
+      "type": "marked-face",
+      "task_type": "placement",
+      "correct": true
+    }
+  ]
+}

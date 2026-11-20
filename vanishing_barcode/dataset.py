@@ -17,6 +17,9 @@ from reportlab.lib.pagesizes import A4
 from . import artwork
 from .carton import verify_geometry
 from .cases import CHOICES, DEFAULT_SEED, QUESTIONS, make_cases, solve
+from .challenge import COVER_EDGE_TOLERANCE_MM, varied_cases
+
+RELEASE_CHANGES = {"position": "artwork-position", "face": "marked-face", "repair-location": "repair-positions"}
 
 
 @dataclass(frozen=True)
@@ -85,10 +88,10 @@ def write_bytes(path, data, *, replace_existing=True):
 
 
 def json_bytes(data):
-    return (json.dumps(data, indent=2) + "\n").encode("utf-8")
+    return (json.dumps(data, indent=2, allow_nan=False) + "\n").encode("utf-8")
 
 
-def read_replies(path):
+def read_json(path, limit):
     def unique_fields(pairs):
         values = {}
         for key, value in pairs:
@@ -97,7 +100,14 @@ def read_replies(path):
             values[key] = value
         return values
 
-    supplied = json.loads(read_limited(path, 100_000), object_pairs_hook=unique_fields)
+    def invalid_constant(value):
+        raise ValueError(f"Invalid JSON constant {value}")
+
+    return json.loads(read_limited(path, limit), object_pairs_hook=unique_fields, parse_constant=invalid_constant)
+
+
+def read_replies(path):
+    supplied = read_json(path, 100_000)
     if not isinstance(supplied, dict) or any(not isinstance(value, str) for value in supplied.values()):
         raise ValueError("Reply file must map task IDs to plain text replies")
     return {key: {"raw_reply": value} for key, value in supplied.items()}
@@ -109,7 +119,9 @@ def encode_png(image):
     return buffer.getvalue()
 
 
-def validate_pair(entries):
+def validate_pair(entries, change=None):
+    if len(entries) != 2:
+        raise ValueError("Every pair must contain exactly two tasks")
     (first, left, a), (second, right, b) = entries
     if any(img.size != (artwork.MODEL_WIDTH * artwork.RASTER_SCALE, artwork.MODEL_HEIGHT * artwork.RASTER_SCALE)
            or img.mode != "RGB" or img.info for img in (left, right)):
@@ -119,6 +131,17 @@ def validate_pair(entries):
     if not bbox:
         raise ValueError("Both images in a pair are identical")
     scale = artwork.RASTER_SCALE
+
+    if change:
+        if change == "artwork-position":
+            normalized = replace(second, carton=replace(second.carton, barcode=first.carton.barcode))
+        elif change == "marked-face":
+            normalized = replace(second, diamond=first.diamond)
+        else:
+            normalized = replace(second, options=first.options)
+        if first != normalized or a == b or bbox[1] < 129*scale or bbox[3] >= 500*scale:
+            raise ValueError("An artwork pair must change only its indicated mark or positions and flip its answer")
+        return {"type": change, "same_answer": False, "changed_pixel_bounds": list(bbox), "order_identical": True}
 
     if second.cosmetic:
         if first != replace(second, cosmetic=False) or a != b:
@@ -156,21 +179,26 @@ def validate_pair(entries):
 
 
 def build_pack(dataset, seed=DEFAULT_SEED):
-    if dataset not in ("sample", "evaluation") or type(seed) is not int or not 0 <= seed < 2**32:
+    if dataset not in ("sample", "evaluation", "release") or type(seed) is not int or not 0 <= seed < 2**32:
         raise ValueError("Choose a known dataset and an unsigned 32-bit seed")
     seed = None if dataset == "sample" else seed
-    cases = make_cases(dataset, seed)
+    release = dataset == "release"
+    cases = varied_cases(seed) if release else make_cases(dataset, seed)
+    tolerance = COVER_EDGE_TOLERANCE_MM if release else 1
     tasks, groups, files = [], defaultdict(list), {}
     for case in cases:
-        result = solve(case)
+        result = solve(case, tolerance)
         image = artwork.model_image(case)
         png = encode_png(image)
         variant = len(groups[case.pair_id])
         key_seed = (f"vanishing-barcode/v1/{case.pair_id}/{variant}" if seed is None
                     else f"vanishing-barcode/v2/{seed}/{case.pair_id}/{variant}")
+        if release:
+            key_seed = f"vanishing-barcode/v3/{seed}/{case.pair_id}/{variant}"
         key = digest(key_seed.encode("utf-8"))[:12]
         reference = {"id": key, "pair_id": case.pair_id, "task_type": case.task_type,
-                     "pair_type": "cosmetic" if case.task_type == "placement" else "fold-order",
+                     "pair_type": (RELEASE_CHANGES.get(case.pair_id, "cosmetic" if case.pair_id == "color" else "fold-order")
+                                   if release else "cosmetic" if case.task_type == "placement" else "fold-order"),
                      "image_sha256": digest(png), "allowed_replies": CHOICES[case.task_type],
                      "case": asdict(case), **result}
         tasks.append(Task(key, QUESTIONS[case.task_type], png, reference))
@@ -178,18 +206,24 @@ def build_pack(dataset, seed=DEFAULT_SEED):
         files[f"{dataset}/reveals/{key}.png"] = encode_png(artwork.reveal_image(case, result))
         groups[case.pair_id].append((case, image, result["answer"]))
 
+    if len({task.id for task in tasks}) != len(tasks):
+        raise ValueError("Duplicate task ID")
+    if release and len({(task.png, task.question) for task in tasks}) != len(tasks):
+        raise ValueError("Duplicate model input in the release pack")
     pair_checks = {}
     for pair_id, entries in groups.items():
-        pair_checks[pair_id] = validate_pair(entries)
-        pdf = artwork.print_sheet(entries[0][0])
-        with closing(artwork.pypdfium2.PdfDocument(pdf)) as document, closing(document[0]) as page:
-            if len(document) != 1 or any(abs(a - b) > 0.01 for a, b in zip(page.get_size(), A4)):
-                raise ValueError("Each print sheet must be one A4 page")
-        path = "pdf/carton.pdf" if seed is None else f"evaluation/print/{pair_id}.pdf"
-        files[path] = pdf
+        change = RELEASE_CHANGES.get(pair_id) if release else None
+        pair_checks[pair_id] = validate_pair(entries, change)
+        for index, (case, _, _) in enumerate(entries if change else entries[:1], 1):
+            pdf = artwork.print_sheet(case)
+            with closing(artwork.pypdfium2.PdfDocument(pdf)) as document, closing(document[0]) as page:
+                if len(document) != 1 or any(abs(a - b) > 0.01 for a, b in zip(page.get_size(), A4)):
+                    raise ValueError("Each print sheet must be one A4 page")
+            name = f"{pair_id}-{index}" if change else pair_id
+            files["pdf/carton.pdf" if seed is None else f"{dataset}/print/{name}.pdf"] = pdf
 
     validation = {"dataset": dataset, "seed": seed, "same_question_within_pairs": True,
-                  "inputs_have_no_embedded_metadata": True, "cover_edge_tolerance_mm": 1,
+                  "inputs_have_no_embedded_metadata": True, "cover_edge_tolerance_mm": tolerance,
                   "print_page_mm": [210, 297], "pairs": pair_checks}
     if seed is None:
         validation["geometry"] = verify_geometry(cases[0].carton, [case.order for case in cases])

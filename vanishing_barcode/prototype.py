@@ -6,6 +6,8 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
+from .cases import DEFAULT_SEED
+from .challenge import RELEASE_SEED
 from .dataset import artifact_path, build_pack, read_limited, write_bytes
 from .evaluation import MODEL_ID, score
 
@@ -14,6 +16,11 @@ TITLES = {
     "carton-02": "Partial cover",
     "carton-03": "Repair",
     "carton-04": "Face placement",
+    "order": "New fold-order pair",
+    "position": "Move the barcode",
+    "color": "Color control",
+    "repair-location": "Repair placement",
+    "face": "Move the marked face",
 }
 
 
@@ -43,6 +50,7 @@ def recorded_runs(root, pack):
         if checked["scores"] != report["scores"]:
             raise ValueError(f"Saved scores disagree with the recorded replies in {filename}")
         yield {"model": model, "mode": mode, "dataset": pack.dataset, "scores": checked["scores"],
+               "visibility_outcomes": checked["visibility_outcomes"],
                "items": {item["id"]: {"reply": item["raw_reply"], "status": item["status"]} for item in checked["items"]}}
 
 
@@ -55,12 +63,17 @@ def exercise_pairs(pack):
                                       "reveal": data_uri("image/png", pack.files[f"{pack.dataset}/reveals/{task.id}.png"])})
 
     for key, tasks in groups.items():
-        sheet = "pdf/carton.pdf" if pack.dataset == "sample" else f"evaluation/print/{key}.pdf"
-        yield {"id": key, "title": TITLES[key], "tasks": tasks, "sheet": data_uri("application/pdf", pack.files[sheet])}
+        for i, task in enumerate(tasks, 1):
+            sheet = "pdf/carton.pdf" if pack.dataset == "sample" else f"{pack.dataset}/print/{key}.pdf"
+            if sheet not in pack.files:
+                sheet = f"{pack.dataset}/print/{key}-{i}.pdf"
+            task["sheet"] = data_uri("application/pdf", pack.files[sheet])
+        yield {"id": key, "title": TITLES[key], "tasks": tasks}
 
 
 def export_prototype(root, seed):
-    packs = [build_pack(dataset, seed) for dataset in ("sample", "evaluation")]
+    release_seed = RELEASE_SEED if seed == DEFAULT_SEED else seed
+    packs = [build_pack("sample", seed), build_pack("evaluation", seed), build_pack("release", release_seed)]
     payload = {"seed": seed, "pairs": [pair for pack in packs for pair in exercise_pairs(pack)],
                "runs": [run for pack in packs for run in recorded_runs(root, pack)]}
     template = Path(__file__).with_name("prototype.html").read_text(encoding="utf-8")

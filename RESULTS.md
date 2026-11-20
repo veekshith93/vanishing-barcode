@@ -1,5 +1,16 @@
 # First-round results
 
+## Corrected synthetic release
+
+Seed `41403` generates ten tasks across three carton layouts. The release includes a visibility flip that keeps the fold order fixed, both fully and partly covered barcodes, and a repair whose correct placement is on the flap folded first. Model scores describe synthetic geometry cases. Physical folding and scan verification are pending.
+
+| Run | Tasks correct | Pairs correct | False passes | False rejects | Parse errors |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| [GPT-6.2 Sol with diagrams](output/release/scores-vision.json) | 10/10 | 5/5 | 0/4 | 0/2 | 0 |
+| [GPT-6.2 Sol text only](output/release/scores-text.json) | 5/10 | 0/5 | 3/4 | 0/2 | 1 |
+
+False-pass and false-reject denominators are covered and visible tasks, respectively. The image run paused after three requests, then resumed for the remaining seven. Both reports preserve all raw replies. [Ten-task manifest](output/release/tasks.jsonl) · [Geometry and paired controls](output/release/validation.json)
+
 ## See the signature pair
 
 ![Two drawings of the same carton. B then A leaves the barcode visible. A then B covers it.](output/sample/pair-preview.png)

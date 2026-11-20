@@ -1,0 +1,72 @@
+{
+  "dataset": "release",
+  "seed": 41403,
+  "same_question_within_pairs": true,
+  "inputs_have_no_embedded_metadata": true,
+  "cover_edge_tolerance_mm": 2,
+  "print_page_mm": [
+    210,
+    297
+  ],
+  "pairs": {
+    "order": {
+      "type": "fold-order",
+      "same_answer": false,
+      "changed_pixel_bounds": [
+        645,
+        1104,
+        1124,
+        1273
+      ],
+      "changes_limited_to_steps": [
+        3,
+        4
+      ],
+      "flat_net_pixel_identical": true
+    },
+    "position": {
+      "type": "artwork-position",
+      "same_answer": false,
+      "changed_pixel_bounds": [
+        913,
+        295,
+        1033,
+        432
+      ],
+      "order_identical": true
+    },
+    "color": {
+      "type": "cosmetic",
+      "same_answer": true,
+      "changed_pixel_bounds": [
+        89,
+        451,
+        853,
+        700
+      ]
+    },
+    "repair-location": {
+      "type": "repair-positions",
+      "same_answer": false,
+      "changed_pixel_bounds": [
+        145,
+        336,
+        801,
+        461
+      ],
+      "order_identical": true
+    },
+    "face": {
+      "type": "marked-face",
+      "same_answer": false,
+      "changed_pixel_bounds": [
+        175,
+        465,
+        748,
+        533
+      ],
+      "order_identical": true
+    }
+  },
+  "pack_sha256": "cc206756257e5cb71e1322853da67da48523a903051d140d2d27c4f206f5da51"
+}

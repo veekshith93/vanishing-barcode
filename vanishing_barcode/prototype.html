@@ -182,7 +182,7 @@
       <p id="results-description"></p>
       <div class="card table-card" id="table-card">
         <table>
-          <thead><tr><th scope="col">Pack</th><th scope="col">Model</th><th scope="col">Input</th><th scope="col">Tasks correct</th><th scope="col">Pairs correct</th><th scope="col">Parse errors</th></tr></thead>
+          <thead><tr><th scope="col">Pack</th><th scope="col">Model</th><th scope="col">Input</th><th scope="col">Tasks correct</th><th scope="col">Pairs correct</th><th scope="col">False passes</th><th scope="col">Parse errors</th></tr></thead>
           <tbody id="result-rows"></tbody>
         </table>
       </div>
@@ -278,8 +278,8 @@
       byId("step-nav").replaceChildren(...pair.tasks.map((entry, index) =>
         createButton(`Diagram ${index + 1}`, index === variant, () => selectVariant(index, "nav"))));
       byId("diagram").src = task.image;
-      byId("print-sheet").href = pair.sheet;
-      byId("print-sheet").download = `${pair.id}.pdf`;
+      byId("print-sheet").href = task.sheet;
+      byId("print-sheet").download = `${pair.id}-${variant + 1}.pdf`;
       byId("question").textContent = task.question;
       byId("choices").replaceChildren(...task.choices.map(choice => {
         const button = createButton(capital(choice), choice === (locked ? value : selection), () => choose(choice));
@@ -322,8 +322,10 @@
     byId("result-rows").replaceChildren(...data.runs.map(run => {
       const row = document.createElement("tr");
       const scores = run.scores;
-      const values = [run.dataset === "sample" ? "Signature" : "Held-out", modelName(run), inputName(run.mode),
-        `${scores.correct_items}/${scores.items}`, `${scores.correct_pairs}/${scores.pairs}`, String(scores.parse_error)];
+      const safety = run.visibility_outcomes;
+      const pack = {sample: "Signature", evaluation: "Archived held-out", release: "Corrected"}[run.dataset];
+      const values = [pack, modelName(run), inputName(run.mode), `${scores.correct_items}/${scores.items}`,
+        `${scores.correct_pairs}/${scores.pairs}`, `${safety.false_pass}/${safety.covered_cases}`, String(scores.parse_error)];
       for (const value of values) {
         const cell = document.createElement("td");
         cell.textContent = value;

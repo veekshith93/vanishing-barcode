@@ -29,3 +29,5 @@ Print on A4 at **Actual Size (100%)**. Check that the scale bar measures 50 mm b
 | Date and observer | Task ID and order | Measured scale bar | Observed result | Photo or video | Disagreement and action |
 | --- | --- | --- | --- | --- | --- |
 | | | | | | |
+
+For the corrected release, the print sheets under `output/release/print` follow the same pairs as the browser. Open each variant’s **Download A4 sheet**, then use the fold order shown in its diagram. Record the 50 mm scale bar, material thickness, cut and crease offsets, artwork alignment and which flap ends up on top. Photograph any difference between the reference and the assembly before reporting the physical result. Keep scanner verification on actual printed symbols as a separate observation. [Packaging pilot sign-offs](PRE_RELEASE.md)

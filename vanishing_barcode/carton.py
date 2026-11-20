@@ -85,6 +85,8 @@ class Carton:
         """Transform a flap or marking into the top view, from Front to Back."""
         if flap == "A":
             return Rect(rect.x0 - self.front_x, -rect.y1, rect.x1 - self.front_x, -rect.y0)
+        if flap != "B":
+            raise ValueError(f"Unknown flap {flap!r}")
         return Rect(
             self.back_x + self.width - rect.x1, self.depth + rect.y0,
             self.back_x + self.width - rect.x0, self.depth + rect.y1,
@@ -129,6 +131,11 @@ def closed_cells(carton, flap, region):
 
 
 def lid_grid(carton):
+    dimensions = (carton.width, carton.depth, carton.height, carton.tab, carton.flap_a, carton.flap_b)
+    if any(type(d) is not int or not 0 < d <= 190 for d in dimensions):
+        raise ValueError("Carton dimensions must be positive whole millimetres up to 190")
+    if carton.first_wall not in WALL_ORDER or carton.base_wall not in WALL_ORDER:
+        raise ValueError("Invalid seam or base wall")
     if min(carton.width, carton.depth) <= 0 or carton.height <= 8 or carton.tab <= 4:
         raise ValueError("The carton and its clipped tab need positive dimensions")
     # Each flap stops before the opposite hinge at every angle. Until it is
@@ -144,13 +151,16 @@ def lid_grid(carton):
     return closed_flaps
 
 
-def checked_visibility(carton, order, flap, region):
+def checked_visibility(carton, order, flap, region, tolerance_mm=1):
     if tuple(order) not in (("A", "B"), ("B", "A")):
         raise ValueError("The lid order must contain each flap once")
-    if (region.x0 >= region.x1 or region.y0 >= region.y1 or
-            region.overlap(carton.flap(flap).inset(2)) != region.area):
-        raise ValueError("The marking needs at least 2 mm clearance from the flap edges")
+    if type(tolerance_mm) is not int or not 0 <= tolerance_mm <= 4:
+        raise ValueError("Tolerance must be a whole number from 0 to 4 mm")
     closed_flaps = lid_grid(carton)
+    if (not isinstance(region, Rect) or any(type(v) is not int for v in (region.x0, region.y0, region.x1, region.y1))
+            or region.x0 >= region.x1 or region.y0 >= region.y1
+            or region.overlap(carton.flap(flap).inset(max(2, tolerance_mm))) != region.area):
+        raise ValueError("The marking needs at least 2 mm clearance from the flap edges")
     surface = {cell: name for name in order for cell in closed_flaps[name]}
     barcode_cells = closed_cells(carton, flap, region)
     covered = sum(surface[cell] != flap for cell in barcode_cells)
@@ -160,8 +170,8 @@ def checked_visibility(carton, order, flap, region):
     if flap != order[-1]:
         cover = carton.closed(order[-1], carton.flap(order[-1]))
         mark = carton.closed(flap, region)
-        if any(bool(mark.overlap(cover.inset(delta))) != bool(covered) for delta in (-1, 1)):
-            raise ValueError("Visibility can flip with a 1 mm change to the covering flap edge")
+        if any(bool(mark.overlap(cover.inset(delta))) != bool(covered) for delta in (-tolerance_mm, tolerance_mm)):
+            raise ValueError(f"Visibility can flip with a {tolerance_mm} mm change to the covering flap edge")
     return {"order": list(order), "grid_covered_mm2": covered, **expected}
 
 

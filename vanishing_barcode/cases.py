@@ -38,6 +38,8 @@ class Case:
 def make_cases(dataset, seed):
     if dataset == "sample":
         return [Case("carton-01", Carton(), order) for order in ORDERS]
+    if dataset != "evaluation":
+        raise ValueError("Unknown carton dataset")
 
     rng = Random(seed)
     w, d, h = rng.randint(44, 48), rng.randint(35, 39), rng.randint(36, 43)
@@ -85,8 +87,12 @@ def placed_face(carton, point):
     raise ValueError("The placement marker must sit fully on a side wall")
 
 
-def check_repair(case):
+def check_repair(case, tolerance_mm=1):
     carton, order = case.carton, case.order
+    if len(case.options) != 3 or {o.label for o in case.options} != set("PQR"):
+        raise ValueError("Repair must offer one rectangle for each of P, Q and R")
+    if any(a.bounds.overlap(b.bounds) for i, a in enumerate(case.options) for b in case.options[i+1:]):
+        raise ValueError("Repair rectangles must not overlap")
     checked = {}
     for option in case.options:
         region = option.bounds
@@ -96,23 +102,21 @@ def check_repair(case):
                 raise ValueError("Fold-crossing option must be printed across the actual lid hinge")
             checked[option.label] = {"valid": False, "reason": "crosses crease"}
         else:
-            result = checked_visibility(carton, order, option.flap, region)
+            result = checked_visibility(carton, order, option.flap, region, tolerance_mm)
             checked[option.label] = {"valid": result["answer"] == "yes",
                                      "covered_mm2": result["covered_mm2"],
                                      "grid_covered_mm2": result["grid_covered_mm2"]}
-    if set(checked) != set("PQR") or len(case.options) != 3:
-        raise ValueError("Repair must offer one rectangle for each of P, Q and R")
     valid = [label for label, result in checked.items() if result["valid"]]
     if len(valid) != 1:
         raise ValueError("Repair must have exactly one fully visible position")
     return {"answer": valid[0].lower(), "options": checked}
 
 
-def solve(case):
+def solve(case, tolerance_mm=1):
     if case.task_type == "visibility":
-        return checked_visibility(case.carton, case.order, case.carton.barcode_flap, case.carton.barcode)
+        return checked_visibility(case.carton, case.order, case.carton.barcode_flap, case.carton.barcode, tolerance_mm)
     if case.task_type == "placement":
         return placed_face(case.carton, case.diamond)
     if case.task_type == "repair":
-        return check_repair(case)
+        return check_repair(case, tolerance_mm)
     raise ValueError("Unknown task type")

@@ -1,0 +1,563 @@
+{
+  "dataset": "release",
+  "seed": 41403,
+  "tasks": [
+    {
+      "id": "11ddff773704",
+      "pair_id": "order",
+      "task_type": "visibility",
+      "pair_type": "fold-order",
+      "image_sha256": "855619cd4f36df2cccf385bae0e2d55e09aeac38991229a301d7369eb0793e1b",
+      "allowed_replies": [
+        "yes",
+        "no"
+      ],
+      "case": {
+        "pair_id": "order",
+        "carton": {
+          "width": 40,
+          "depth": 44,
+          "height": 42,
+          "tab": 10,
+          "flap_a": 32,
+          "flap_b": 31,
+          "first_wall": "Right",
+          "base_wall": "Left",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 138,
+            "y0": -17,
+            "x1": 158,
+            "y1": -9
+          }
+        },
+        "order": [
+          "B",
+          "A"
+        ],
+        "task_type": "visibility",
+        "cosmetic": false,
+        "diamond": null,
+        "options": []
+      },
+      "order": [
+        "B",
+        "A"
+      ],
+      "grid_covered_mm2": 0,
+      "answer": "yes",
+      "covered_mm2": 0,
+      "visible_mm2": 160
+    },
+    {
+      "id": "69acd30ebf3c",
+      "pair_id": "order",
+      "task_type": "visibility",
+      "pair_type": "fold-order",
+      "image_sha256": "5b32e71f6ff99f0f2ab18620a2f1d99b5fe61016b5a86f5754c4599e9b06cfde",
+      "allowed_replies": [
+        "yes",
+        "no"
+      ],
+      "case": {
+        "pair_id": "order",
+        "carton": {
+          "width": 40,
+          "depth": 44,
+          "height": 42,
+          "tab": 10,
+          "flap_a": 32,
+          "flap_b": 31,
+          "first_wall": "Right",
+          "base_wall": "Left",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 138,
+            "y0": -17,
+            "x1": 158,
+            "y1": -9
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "visibility",
+        "cosmetic": false,
+        "diamond": null,
+        "options": []
+      },
+      "order": [
+        "A",
+        "B"
+      ],
+      "grid_covered_mm2": 80,
+      "answer": "no",
+      "covered_mm2": 80,
+      "visible_mm2": 80
+    },
+    {
+      "id": "785b3252ec30",
+      "pair_id": "position",
+      "task_type": "visibility",
+      "pair_type": "artwork-position",
+      "image_sha256": "0a3309753e82726a0f68a6aa3508b2a43955f128b16eb663b1e75fbbea9130f8",
+      "allowed_replies": [
+        "yes",
+        "no"
+      ],
+      "case": {
+        "pair_id": "position",
+        "carton": {
+          "width": 40,
+          "depth": 44,
+          "height": 42,
+          "tab": 10,
+          "flap_a": 32,
+          "flap_b": 31,
+          "first_wall": "Right",
+          "base_wall": "Left",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 138,
+            "y0": -23,
+            "x1": 158,
+            "y1": -17
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "visibility",
+        "cosmetic": false,
+        "diamond": null,
+        "options": []
+      },
+      "order": [
+        "A",
+        "B"
+      ],
+      "grid_covered_mm2": 120,
+      "answer": "no",
+      "covered_mm2": 120,
+      "visible_mm2": 0
+    },
+    {
+      "id": "6d6182e5e1d3",
+      "pair_id": "position",
+      "task_type": "visibility",
+      "pair_type": "artwork-position",
+      "image_sha256": "be4186111d40069845fc6d8195d0eef248f8a2900421e4c8cc734d145d6d427a",
+      "allowed_replies": [
+        "yes",
+        "no"
+      ],
+      "case": {
+        "pair_id": "position",
+        "carton": {
+          "width": 40,
+          "depth": 44,
+          "height": 42,
+          "tab": 10,
+          "flap_a": 32,
+          "flap_b": 31,
+          "first_wall": "Right",
+          "base_wall": "Left",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 138,
+            "y0": -8,
+            "x1": 158,
+            "y1": -3
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "visibility",
+        "cosmetic": false,
+        "diamond": null,
+        "options": []
+      },
+      "order": [
+        "A",
+        "B"
+      ],
+      "grid_covered_mm2": 0,
+      "answer": "yes",
+      "covered_mm2": 0,
+      "visible_mm2": 100
+    },
+    {
+      "id": "29a12ec4697e",
+      "pair_id": "color",
+      "task_type": "visibility",
+      "pair_type": "cosmetic",
+      "image_sha256": "fba69481bf08c030826064b69d5c8b058b7445e6a2e717230aeed8179499d66c",
+      "allowed_replies": [
+        "yes",
+        "no"
+      ],
+      "case": {
+        "pair_id": "color",
+        "carton": {
+          "width": 40,
+          "depth": 44,
+          "height": 42,
+          "tab": 10,
+          "flap_a": 32,
+          "flap_b": 31,
+          "first_wall": "Right",
+          "base_wall": "Left",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 138,
+            "y0": -24,
+            "x1": 158,
+            "y1": -18
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "visibility",
+        "cosmetic": false,
+        "diamond": null,
+        "options": []
+      },
+      "order": [
+        "A",
+        "B"
+      ],
+      "grid_covered_mm2": 120,
+      "answer": "no",
+      "covered_mm2": 120,
+      "visible_mm2": 0
+    },
+    {
+      "id": "b10da8b52304",
+      "pair_id": "color",
+      "task_type": "visibility",
+      "pair_type": "cosmetic",
+      "image_sha256": "2ddb12cce913fd9700f9e07775704ee28fabd3c2f42876f65910c717c52f23d8",
+      "allowed_replies": [
+        "yes",
+        "no"
+      ],
+      "case": {
+        "pair_id": "color",
+        "carton": {
+          "width": 40,
+          "depth": 44,
+          "height": 42,
+          "tab": 10,
+          "flap_a": 32,
+          "flap_b": 31,
+          "first_wall": "Right",
+          "base_wall": "Left",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 138,
+            "y0": -24,
+            "x1": 158,
+            "y1": -18
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "visibility",
+        "cosmetic": true,
+        "diamond": null,
+        "options": []
+      },
+      "order": [
+        "A",
+        "B"
+      ],
+      "grid_covered_mm2": 120,
+      "answer": "no",
+      "covered_mm2": 120,
+      "visible_mm2": 0
+    },
+    {
+      "id": "ae41170e35e9",
+      "pair_id": "repair-location",
+      "task_type": "repair",
+      "pair_type": "repair-positions",
+      "image_sha256": "cf1dfd78a5d6caf991a997d4ea271d739580766d20f1704e411d472ad6f69400",
+      "allowed_replies": [
+        "p",
+        "q",
+        "r"
+      ],
+      "case": {
+        "pair_id": "repair-location",
+        "carton": {
+          "width": 42,
+          "depth": 41,
+          "height": 41,
+          "tab": 10,
+          "flap_a": 29,
+          "flap_b": 28,
+          "first_wall": "Front",
+          "base_wall": "Front",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 9,
+            "y0": -23,
+            "x1": 35,
+            "y1": -13
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "repair",
+        "cosmetic": false,
+        "diamond": null,
+        "options": [
+          {
+            "label": "Q",
+            "flap": "A",
+            "bounds": {
+              "x0": 11,
+              "y0": -16,
+              "x1": 31,
+              "y1": -10
+            }
+          },
+          {
+            "label": "R",
+            "flap": "A",
+            "bounds": {
+              "x0": 11,
+              "y0": -23,
+              "x1": 31,
+              "y1": -17
+            }
+          },
+          {
+            "label": "P",
+            "flap": "B",
+            "bounds": {
+              "x0": 94,
+              "y0": -10,
+              "x1": 114,
+              "y1": -4
+            }
+          }
+        ]
+      },
+      "answer": "p",
+      "options": {
+        "Q": {
+          "valid": false,
+          "covered_mm2": 60,
+          "grid_covered_mm2": 60
+        },
+        "R": {
+          "valid": false,
+          "covered_mm2": 120,
+          "grid_covered_mm2": 120
+        },
+        "P": {
+          "valid": true,
+          "covered_mm2": 0,
+          "grid_covered_mm2": 0
+        }
+      }
+    },
+    {
+      "id": "58ad7dd4e33d",
+      "pair_id": "repair-location",
+      "task_type": "repair",
+      "pair_type": "repair-positions",
+      "image_sha256": "d3e90a77f7c1bbc455a64002799812d284d37fe543f80e852d37a05baf0d5da1",
+      "allowed_replies": [
+        "p",
+        "q",
+        "r"
+      ],
+      "case": {
+        "pair_id": "repair-location",
+        "carton": {
+          "width": 42,
+          "depth": 41,
+          "height": 41,
+          "tab": 10,
+          "flap_a": 29,
+          "flap_b": 28,
+          "first_wall": "Front",
+          "base_wall": "Front",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 9,
+            "y0": -23,
+            "x1": 35,
+            "y1": -13
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "repair",
+        "cosmetic": false,
+        "diamond": null,
+        "options": [
+          {
+            "label": "Q",
+            "flap": "A",
+            "bounds": {
+              "x0": 11,
+              "y0": -8,
+              "x1": 31,
+              "y1": -2
+            }
+          },
+          {
+            "label": "R",
+            "flap": "A",
+            "bounds": {
+              "x0": 11,
+              "y0": -23,
+              "x1": 31,
+              "y1": -17
+            }
+          },
+          {
+            "label": "P",
+            "flap": "B",
+            "bounds": {
+              "x0": 94,
+              "y0": -3,
+              "x1": 114,
+              "y1": 3
+            }
+          }
+        ]
+      },
+      "answer": "q",
+      "options": {
+        "Q": {
+          "valid": true,
+          "covered_mm2": 0,
+          "grid_covered_mm2": 0
+        },
+        "R": {
+          "valid": false,
+          "covered_mm2": 120,
+          "grid_covered_mm2": 120
+        },
+        "P": {
+          "valid": false,
+          "reason": "crosses crease"
+        }
+      }
+    },
+    {
+      "id": "b45cc4430e28",
+      "pair_id": "face",
+      "task_type": "placement",
+      "pair_type": "marked-face",
+      "image_sha256": "1c03649a8ae75c92945d3f438e92a03b069cad63109668b1cffd42869a9a808e",
+      "allowed_replies": [
+        "front",
+        "right",
+        "back",
+        "left"
+      ],
+      "case": {
+        "pair_id": "face",
+        "carton": {
+          "width": 43,
+          "depth": 43,
+          "height": 41,
+          "tab": 10,
+          "flap_a": 30,
+          "flap_b": 32,
+          "first_wall": "Right",
+          "base_wall": "Right",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 9,
+            "y0": -23,
+            "x1": 35,
+            "y1": -13
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "placement",
+        "cosmetic": false,
+        "diamond": [
+          107,
+          9
+        ],
+        "options": []
+      },
+      "answer": "left",
+      "outward_normal_xy": [
+        -1,
+        0
+      ]
+    },
+    {
+      "id": "a20bbc4d409f",
+      "pair_id": "face",
+      "task_type": "placement",
+      "pair_type": "marked-face",
+      "image_sha256": "1b08315850321523c2ff851de52a841bb50659762c6f4c159306dce087919822",
+      "allowed_replies": [
+        "front",
+        "right",
+        "back",
+        "left"
+      ],
+      "case": {
+        "pair_id": "face",
+        "carton": {
+          "width": 43,
+          "depth": 43,
+          "height": 41,
+          "tab": 10,
+          "flap_a": 30,
+          "flap_b": 32,
+          "first_wall": "Right",
+          "base_wall": "Right",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 9,
+            "y0": -23,
+            "x1": 35,
+            "y1": -13
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "placement",
+        "cosmetic": false,
+        "diamond": [
+          21,
+          9
+        ],
+        "options": []
+      },
+      "answer": "right",
+      "outward_normal_xy": [
+        1,
+        0
+      ]
+    }
+  ]
+}

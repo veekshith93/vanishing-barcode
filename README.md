@@ -6,7 +6,7 @@ The benchmark tests whether a vision model can read a flat carton drawing and pr
 
 [Open the browser prototype](output/prototype.html) · [First pair and live results](RESULTS.md) · [Print the signature carton](output/pdf/carton.pdf) · [Blind and physical validation procedure](PHYSICAL_CHECK.md)
 
-Download `output/prototype.html` and open it in a browser to try all four pairs, reveal geometry, and compare recorded model replies. The file works offline and includes the printable cartons. To export updated layouts, run `python -m vanishing_barcode --seed 2026 prototype` after setup.
+Download `output/prototype.html` and open it in a browser to try the signature, corrected and archived pairs, reveal geometry, and compare recorded model replies. The file works offline and includes the printable cartons. To export the demo, run `python -m vanishing_barcode prototype` after setup.
 
 ## Run locally
 
@@ -22,6 +22,17 @@ python -m vanishing_barcode demo
 `demo` regenerates and verifies the signature pair, prints the location of the A4 sheet, and scores synthetic replies. Always answering Yes earns 1/2 items and 0/1 pairs. Run the checks with `python -m unittest discover -s tests -v`.
 
 ### Generate and evaluate fresh layouts
+
+The corrected release uses seed `41403` by default. It includes ten tasks across three carton layouts. One pair changes barcode placement with a fixed fold order. The two repair tasks have valid choices on opposite lid layers, and each batch includes complete, partial and absent occlusion. The visibility label must stay stable under a 2 mm relative cover-edge change. The older `evaluation` pack remains available to replay its recorded results.
+
+```sh
+python -m vanishing_barcode --output output/runs/fresh --dataset release --seed 41404 generate
+python -m vanishing_barcode --output output/runs/fresh --dataset release --seed 41404 verify
+python -m vanishing_barcode --dataset release replay output/release/scores-vision.json \
+  --report output/runs/replayed-release.json
+```
+
+Each live run checkpoints responses next to its report path. Use `--report` and `--request-limit` to cap new calls per invocation, then continue with the same options and `--resume`. Resume checks the original settings and input fingerprint and skips saved responses, including request errors. If a request was interrupted before saving, it may be sent again. The API runner pauses on a quota response. Final reports include false passes, false rejects and reviews for visibility questions.
 
 The following command runs generation, verification, evaluation, and reporting. It uses the existing Codex CLI sign-in and sends each task in a new session. The default reasoning effort is `low`.
 
@@ -72,6 +83,7 @@ The public manifest lists only task ID, image path, and question. The model rece
 | Answer keys and closed-carton reveals | [Signature reference](output/sample/reference.json), [evaluation reference](output/evaluation/reference.json), and [evaluation reveals](output/evaluation/reveals/) |
 | Automated validation and scoring evidence | [Signature checks](output/sample/validation.json), [evaluation checks](output/evaluation/validation.json), and [results](RESULTS.md) |
 | Print and teammate evidence | [A4 signature sheet](output/pdf/carton.pdf), [held-out sheets](output/evaluation/print/), and [observation procedure](PHYSICAL_CHECK.md) |
+| Corrected batch and audit | [Reference inputs and outputs](output/release/validation.json) and [pre-release and pilot sign-offs](PRE_RELEASE.md) |
 
 ## Security and integrity checks
 

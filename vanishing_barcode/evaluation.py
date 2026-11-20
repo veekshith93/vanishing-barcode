@@ -6,6 +6,7 @@ import os
 import re
 import subprocess
 from collections import defaultdict
+from contextlib import nullcontext
 from datetime import UTC, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -14,7 +15,8 @@ from urllib.error import HTTPError
 from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
-from .dataset import digest
+from .dataset import digest, read_json
+from .journal import checkpoint as open_checkpoint
 
 DEFAULT_BASE_URL = "https://api.openai.com/v1"
 API_LIMIT = 1_000_000
@@ -44,9 +46,21 @@ def parse_answer(reply, choices):
 def totals(items, pairs):
     correct_items = sum(item["status"] == "correct" for item in items)
     correct_pairs = sum(pair["correct"] for pair in pairs)
-    return {"items": len(items), "correct_items": correct_items, "item_accuracy": correct_items / len(items),
-            "pairs": len(pairs), "correct_pairs": correct_pairs, "pair_accuracy": correct_pairs / len(pairs),
+    return {"items": len(items), "correct_items": correct_items, "item_accuracy": correct_items / len(items) if items else 0,
+            "pairs": len(pairs), "correct_pairs": correct_pairs, "pair_accuracy": correct_pairs / len(pairs) if pairs else 0,
             **{status: sum(item["status"] == status for item in items) for status in FAILURES}}
+
+
+def visibility_outcomes(items):
+    visibility = [row for row in items if row["task_type"] == "visibility"]
+    covered = sum(row["expected"] == "no" for row in visibility)
+    clear = len(visibility) - covered
+    false_pass = sum(row["status"] == "incorrect" and row["expected"] == "no" for row in visibility)
+    false_reject = sum(row["status"] == "incorrect" and row["expected"] == "yes" for row in visibility)
+    review = sum(row["status"] in ("parse_error", "request_error", "missing_reply") for row in visibility)
+    return {"false_pass": false_pass, "covered_cases": covered, "false_pass_rate": false_pass / covered if covered else None,
+            "false_reject": false_reject, "clear_cases": clear, "false_reject_rate": false_reject / clear if clear else None,
+            "manual_review": review, "visibility_cases": len(visibility)}
 
 
 def score(pack, replies, **run_info):
@@ -84,7 +98,32 @@ def score(pack, replies, **run_info):
                             [pair for pair in pairs if pair["task_type"] == kind])
                for kind in sorted({item["task_type"] for item in items})}
     return {**run_info, "dataset": pack.dataset, "seed": pack.seed, "pack_sha256": pack.sha256,
-            "scores": totals(items, pairs), "by_task_type": by_type, "items": items, "pairs": pairs}
+            "scores": totals(items, pairs), "visibility_outcomes": visibility_outcomes(items),
+            "by_task_type": by_type, "items": items, "pairs": pairs}
+
+
+def replay(pack, path):
+    report = read_json(path, 12_000_000)
+    if not isinstance(report, dict) or report.get("pack_sha256") != pack.sha256 or not isinstance(report.get("items"), list):
+        raise ValueError("Saved report does not match this generated pack")
+    known = {t.id: t.reference["image_sha256"] for t in pack.tasks}
+    replies, seen = {}, set()
+    for item in report["items"]:
+        if not isinstance(item, dict) or not isinstance(item.get("id"), str):
+            raise ValueError("Invalid saved reply record")
+        task_id = item["id"]
+        if task_id not in known or task_id in seen or item.get("image_sha256") != known[task_id]:
+            raise ValueError("Saved report contains a duplicate or mismatched task")
+        seen.add(task_id)
+        raw, error = item.get("raw_reply"), item.get("error")
+        if any(value is not None and (not isinstance(value, str) or len(value) > 100_000) for value in (raw, error)):
+            raise ValueError("Invalid saved reply text")
+        if item.get("status") != "missing_reply" or raw is not None or error is not None:
+            keys = ("raw_reply", "error", "seconds", "sent_image_sha256", "tool_item_types", "usage",
+                    "reported_model", "finish_reason")
+            replies[task_id] = {key: item[key] for key in keys if key in item}
+    return score(pack, replies, source="saved_run_replay", model=report.get("model"), settings=report.get("settings", {}),
+                 started_utc=report.get("started_utc"))
 
 
 class NoRedirects(HTTPRedirectHandler):
@@ -187,12 +226,13 @@ def codex_completion(model, effort, prompt, png):
     return codex_events(process.stdout, process.returncode)
 
 
-def run(pack, model, backend, text_only, base_url, effort, max_tokens):
+def run(pack, model, backend, text_only, base_url, effort, max_tokens, *, checkpoint=None, resume=False, request_limit=None):
     if not MODEL_ID.fullmatch(model):
         raise ValueError("Invalid model identifier")
     settings = {"backend": backend, "mode": "text-only" if text_only else "image+question",
                 "format_instructions": {task.reference["task_type"]: format_instruction(task.reference["task_type"])
                                         for task in pack.tasks}}
+    endpoint_fingerprint = None
     if backend == "api":
         base_url, origin = api_destination(base_url)
         key = os.getenv("VB_API_KEY") or (os.getenv("OPENAI_API_KEY") if base_url == DEFAULT_BASE_URL else None)
@@ -200,24 +240,32 @@ def run(pack, model, backend, text_only, base_url, effort, max_tokens):
             raise ValueError("Set VB_API_KEY for your authorized model endpoint or OPENAI_API_KEY for OpenAI")
         if any(ord(char) <= 32 or ord(char) >= 127 for char in key) or key in model or key in base_url:
             raise ValueError("The API credential must be a bearer token supplied only through the environment")
-        settings.update(api_origin=origin, max_completion_tokens=max_tokens, image_detail=None if text_only else "high")
+        endpoint_fingerprint = digest(base_url.encode())
+        settings.update(api_origin=origin if base_url == DEFAULT_BASE_URL else "custom HTTPS endpoint",
+                        max_completion_tokens=max_tokens, image_detail=None if text_only else "high")
 
         def request(prompt, png):
             return chat_completion(base_url, key, model, max_tokens, prompt, png)
     else:
-        version = subprocess.run(["codex", "--version"], check=True, capture_output=True, text=True).stdout.strip()
+        version = subprocess.run(["codex", "--version"], check=True, capture_output=True, text=True, timeout=10).stdout.strip()
         settings.update(cli_version=version, reasoning_effort=effort, cli_flags=list(CODEX_FLAGS))
 
         def request(prompt, png):
             return codex_completion(model, effort, prompt, png)
 
-    started = datetime.now(UTC).isoformat(timespec="seconds")
-    replies = {}
-    for task in pack.tasks:
-        png = None if text_only else task.png
-        prompt = task.question + "\n\n" + format_instruction(task.reference["task_type"])
-        start = monotonic()
-        response = request(prompt, png)
-        replies[task.id] = {**response, "seconds": round(monotonic() - start, 3),
-                            "sent_image_sha256": None if png is None else digest(png)}
+    identity = digest(json.dumps([pack.sha256, model, settings, endpoint_fingerprint], sort_keys=True).encode())
+    local = {}
+    log = (open_checkpoint(checkpoint, identity, {task.id for task in pack.tasks}, resume) if checkpoint is not None
+           else nullcontext((local, local.__setitem__, datetime.now(UTC).isoformat(timespec="seconds"))))
+    with log as (replies, record, started):
+        pending = [task for task in pack.tasks if task.id not in replies]
+        for task in pending[:request_limit]:
+            png = None if text_only else task.png
+            prompt = task.question + "\n\n" + format_instruction(task.reference["task_type"])
+            start = monotonic()
+            response = request(prompt, png)
+            record(task.id, {**response, "seconds": round(monotonic() - start, 3),
+                             "sent_image_sha256": None if png is None else digest(png)})
+            if response.get("error") == "HTTP 429":
+                break
     return score(pack, replies, source="model_run", model=model, settings=settings, started_utc=started)
