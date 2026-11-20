@@ -8,6 +8,10 @@ The benchmark tests whether a vision model can read a flat carton drawing and pr
 
 Download `output/prototype.html` and open it in a browser to try the signature, corrected and archived pairs, reveal geometry, and compare recorded model replies. The file works offline and includes the printable cartons. To export the demo, run `python -m vanishing_barcode prototype` after setup.
 
+### Deploy the browser demo on Vercel
+
+Import this GitHub repository as a Vercel project from its root. `vercel.json` copies the checked-in `output/prototype.html` to `dist/index.html`. The hosted demo includes the interactive carton pairs, printable sheets, and saved model results.
+
 ## Run locally
 
 Use Python 3.11 or newer. From the project directory, install the pinned dependencies and run the offline demo.

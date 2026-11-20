@@ -8,5 +8,7 @@ __pycache__/
 *.key
 /tmp/
 /output/runs/
+/dist/
+/.vercel/
 *.run/
 /evidence/
