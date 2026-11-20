@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'sha256-@@STYLE_HASH@@'; script-src 'sha256-@@SCRIPT_HASH@@'; base-uri 'none'; form-action 'none'">
+  <title>The Vanishing Barcode</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #f2f5f1;
+      --paper: #fff;
+      --ink: #192922;
+      --muted: #50625a;
+      --line: #d1ddd4;
+      --green: #165c4c;
+      --green-hover: #104738;
+      --green-light: #e3f1e8;
+      --warning: #8a3920;
+      --warning-light: #fbeee7;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--background); }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #178064; outline-offset: 3px; }
+    [hidden] { display: none !important; }
+    .wrap { width: min(1200px, calc(100% - 64px)); margin-inline: auto; }
+    .bar { background: var(--paper); border-bottom: 1px solid var(--line); }
+    .bar-inner, .brand, .top-nav, .intro, .diagram-head, .actions, .step-nav, .result-heading {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .bar-inner { justify-content: space-between; min-height: 66px; }
+    .brand { gap: 10px; font-size: 1rem; font-weight: 730; letter-spacing: -.025em; }
+    .barcode-mark {
+      width: 31px; height: 23px; border-radius: 2px;
+      background: linear-gradient(to right, var(--green) 0 11%, transparent 11% 19%, var(--green) 19% 36%, transparent 36% 44%, var(--green) 44% 52%, transparent 52% 62%, var(--green) 62% 78%, transparent 78% 88%, var(--green) 88%);
+    }
+    .top-nav { gap: 4px; }
+    button, .link-button {
+      min-height: 42px; display: inline-flex; align-items: center; justify-content: center; padding: 8px 14px;
+      border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink);
+      font-size: .91rem; font-weight: 650; text-decoration: none; cursor: pointer;
+    }
+    button:hover, .link-button:hover { background: #f4f8f5; border-color: #a7bdae; }
+    button[aria-pressed="true"] { background: var(--green-light); color: var(--green); border-color: #98bda9; }
+    .top-nav button { border-color: transparent; }
+    .top-nav button[aria-pressed="true"] { border-color: transparent; }
+    main { padding-block: 36px 48px; }
+    .intro { align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+    h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.45rem); letter-spacing: -.043em; font-weight: 760; line-height: 1.03; }
+    p { line-height: 1.52; }
+    .intro p, #results > p { margin: 10px 0 0; color: var(--muted); font-size: 1rem; }
+    .pair-nav { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.48fr) minmax(0, 1fr); align-items: start; gap: 16px; }
+    .card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+    .diagram { margin: 0; overflow: hidden; }
+    .diagram-head { justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    .diagram-head strong { font-size: .94rem; }
+    .diagram-head .actions { gap: 7px; }
+    .diagram-head button, .diagram-head a { min-height: 37px; font-size: .82rem; padding: 7px 10px; }
+    #diagram { display: block; height: auto; width: min(100%, 585px); margin-inline: auto; aspect-ratio: 620 / 668; }
+    .side { display: grid; gap: 12px; }
+    .question-card { padding: 21px; }
+    .step-nav { justify-content: flex-start; gap: 6px; margin-bottom: 19px; }
+    .step-nav button { min-height: 37px; font-size: .84rem; }
+    h2 { margin: 0 0 15px; font-size: clamp(1.2rem, 2.15vw, 1.55rem); line-height: 1.27; letter-spacing: -.028em; }
+    .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 13px; }
+    .choices button { justify-content: flex-start; min-height: 48px; font-size: 1rem; }
+    .choices button:disabled { opacity: 1; cursor: default; }
+    .choices button:disabled:hover { border-color: var(--line); }
+    .actions { flex-wrap: wrap; gap: 8px; }
+    .primary { background: var(--green); color: white; border-color: var(--green); }
+    .primary:hover { background: var(--green-hover); color: white; border-color: var(--green-hover); }
+    .primary:disabled, .primary:disabled:hover { background: #e7ece8; border-color: #d6e0d9; color: #53645a; cursor: default; }
+    .quiet { background: transparent; border-color: transparent; color: var(--green); }
+    .quiet:hover { background: #eef5f0; border-color: transparent; }
+    .answer-panel { margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--line); }
+    .answer-banner { border-radius: 8px; padding: 9px 11px; font-weight: 690; background: var(--green-light); color: var(--green); }
+    .answer-banner[data-status="incorrect"] { background: var(--warning-light); color: var(--warning); }
+    #reveal-image { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 7px; margin-block: 9px; }
+    .pair-score { padding: 14px 17px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .pair-score p { margin: 2px 0 0; font-size: .86rem; color: var(--muted); }
+    #results > p { margin-bottom: 20px; }
+    .table-card { overflow-x: auto; margin-bottom: 14px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+    caption { padding: 13px 16px 8px; text-align: left; color: var(--muted); }
+    th, td { padding: 13px 16px; border-bottom: 1px solid var(--line); font-size: .92rem; }
+    thead th { background: #edf3ed; font-size: .8rem; }
+    tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
+    #run-pair { display: grid; gap: 9px; margin-top: 11px; }
+    #replies { margin-top: 15px; }
+    #replies > summary { font-weight: 660; color: var(--green); cursor: pointer; }
+    .run-row { display: grid; grid-template-columns: minmax(140px, .8fr) 1fr; gap: 7px; padding: 9px 10px; background: #f5f8f5; border-radius: 7px; font-size: .88rem; }
+    .run-row p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+    dialog { padding: 12px; width: min(880px, calc(100% - 28px)); max-height: 94dvh; border: 1px solid var(--line); border-radius: 12px; }
+    dialog::backdrop { background: rgb(18 33 25 / 72%); }
+    dialog img { margin-inline: auto; display: block; max-width: 100%; height: auto; }
+    dialog form { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+    @media (max-width: 760px) {
+      .wrap { width: calc(100% - 28px); }
+      .bar-inner { min-height: 58px; }
+      .brand { font-size: .86rem; }
+      .barcode-mark { display: none; }
+      .top-nav button { padding-inline: 8px; font-size: .83rem; }
+      main { padding-top: 25px; }
+      .layout { grid-template-columns: 1fr; gap: 10px; }
+      #diagram { width: min(100%, 520px); }
+      .question-card { padding: 16px; }
+    }
+    @media (max-width: 370px) {
+      .top-nav { gap: 0; }
+      .pair-nav button { min-height: 38px; padding-inline: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <div class="wrap bar-inner">
+      <div class="brand"><span aria-hidden="true" class="barcode-mark"></span>The Vanishing Barcode</div>
+      <nav class="top-nav" aria-label="Prototype views">
+        <button type="button" id="try-tab" aria-controls="exercise" aria-pressed="true">Try the tasks</button>
+        <button type="button" id="model-tab" aria-controls="results" aria-pressed="false">Model results</button>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <section id="exercise">
+      <div class="intro">
+        <div>
+          <h1>Will the barcode survive the fold?</h1>
+          <p>Read the flat carton and its fold order. Predict what happens after closing it.</p>
+        </div>
+      </div>
+      <nav id="pair-nav" class="pair-nav" aria-label="Task pairs"></nav>
+      <div class="layout">
+        <figure class="card diagram">
+          <figcaption class="diagram-head">
+            <strong>Carton drawing</strong>
+            <div class="actions">
+              <button type="button" id="enlarge">Enlarge</button>
+              <a class="link-button" id="print-sheet" download>Download A4 sheet</a>
+            </div>
+          </figcaption>
+          <img id="diagram" width="1240" height="1336" alt="Flat carton drawing and numbered assembly steps">
+        </figure>
+        <div class="side">
+          <section class="card question-card" aria-labelledby="question">
+            <nav id="step-nav" class="step-nav" aria-label="Diagrams in this pair"></nav>
+            <h2 id="question" tabindex="-1"></h2>
+            <div id="choices" class="choices" role="group" aria-label="Answer choices"></div>
+            <div class="actions" id="question-actions">
+              <button type="button" id="check" class="primary" disabled>Check answer</button>
+              <button type="button" id="unveil" class="quiet">Reveal answer</button>
+            </div>
+            <div class="answer-panel" id="answer-panel" hidden>
+              <div id="answer-banner" class="answer-banner" tabindex="-1" role="status"></div>
+              <img id="reveal-image" alt="Closed carton with the reference answer and geometry" width="930" height="432">
+              <div class="actions">
+                <button type="button" id="next" class="primary">Next diagram</button>
+                <button type="button" id="enlarge-reveal" class="quiet">Enlarge geometry</button>
+              </div>
+              <details id="replies">
+                <summary>Recorded model replies</summary>
+                <div id="run-pair"></div>
+              </details>
+            </div>
+          </section>
+          <section class="card pair-score" aria-label="Pair score">
+            <div>
+              <strong>Pair score</strong>
+              <p id="score-text" aria-live="polite">Answer both diagrams to score the pair.</p>
+            </div>
+            <button type="button" id="reset" class="quiet" hidden>Reset pair</button>
+          </section>
+        </div>
+      </div>
+    </section>
+    <section id="results" hidden>
+      <h1 tabindex="-1" id="results-title">Model results</h1>
+      <p id="results-description"></p>
+      <div class="card table-card" id="table-card">
+        <table>
+          <thead><tr><th scope="col">Pack</th><th scope="col">Model</th><th scope="col">Input</th><th scope="col">Tasks correct</th><th scope="col">Pairs correct</th><th scope="col">Parse errors</th></tr></thead>
+          <tbody id="result-rows"></tbody>
+        </table>
+      </div>
+      <button type="button" id="return" class="primary">Back to tasks</button>
+    </section>
+  </main>
+  <dialog id="diagram-dialog" aria-label="Full size image">
+    <form method="dialog"><button>Close</button></form>
+    <img id="large-diagram" alt="Enlarged carton drawing and numbered assembly steps">
+  </dialog>
+  <noscript>This prototype needs JavaScript to select diagrams and reveal answers.</noscript>
+  <script id="demo-data" type="application/json">@@PAYLOAD@@</script>
+  <script>
+    "use strict";
+    const data = JSON.parse(document.getElementById("demo-data").textContent);
+    const byId = id => document.getElementById(id);
+    const answers = new Map();
+    let pairIndex = 0;
+    let variant = 0;
+    let selection = null;
+    const currentPair = () => data.pairs[pairIndex];
+    const currentTask = () => currentPair().tasks[variant];
+    const capital = value => value[0].toUpperCase() + value.slice(1);
+    const models = {"gpt-6.2-sol": "GPT-6.2 Sol", "gpt-6.1-terra": "GPT-6.1 Terra"};
+    const modelName = run => Object.hasOwn(models, run.model) ? models[run.model] : run.model;
+    const inputName = mode => mode === "text-only" ? "Text only" : "Image + question";
+
+    function createButton(text, pressed, onClick) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = text;
+      button.setAttribute("aria-pressed", String(pressed));
+      button.addEventListener("click", onClick);
+      return button;
+    }
+
+    function selectPair(index) {
+      pairIndex = index;
+      variant = 0;
+      selection = null;
+      renderTask();
+      byId("pair-nav").children[index].focus();
+    }
+
+    function selectVariant(index, focus) {
+      variant = index;
+      selection = null;
+      renderTask();
+      if (focus === "nav") byId("step-nav").children[index].focus();
+      else byId("question").focus({preventScroll: true});
+    }
+
+    function choose(choice) {
+      selection = choice;
+      for (const button of byId("choices").children) {
+        button.setAttribute("aria-pressed", String(button.dataset.value === choice));
+      }
+      byId("check").disabled = false;
+    }
+
+    function recordAnswer(value) {
+      if (answers.has(currentTask().id)) return;
+      answers.set(currentTask().id, value);
+      renderTask();
+      byId("answer-banner").focus({preventScroll: true});
+    }
+
+    function renderRecordedReplies(task) {
+      const notes = data.runs.filter(run => run.mode === "image+question" && Object.hasOwn(run.items, task.id));
+      byId("replies").hidden = notes.length === 0;
+      byId("replies").open = false;
+      const rows = notes.map(run => {
+        const item = run.items[task.id];
+        const row = document.createElement("div");
+        row.className = "run-row";
+        const label = document.createElement("strong");
+        label.textContent = modelName(run);
+        const reply = document.createElement("p");
+        reply.textContent = `${item.reply ?? "No reply"} · ${item.status.replaceAll("_", " ")}`;
+        row.append(label, reply);
+        return row;
+      });
+      byId("run-pair").replaceChildren(...rows);
+    }
+
+    function renderTask() {
+      const pair = currentPair();
+      const task = currentTask();
+      const locked = answers.has(task.id);
+      const value = answers.get(task.id);
+      byId("pair-nav").replaceChildren(...data.pairs.map((entry, index) =>
+        createButton(entry.title, index === pairIndex, () => selectPair(index))));
+      byId("step-nav").replaceChildren(...pair.tasks.map((entry, index) =>
+        createButton(`Diagram ${index + 1}`, index === variant, () => selectVariant(index, "nav"))));
+      byId("diagram").src = task.image;
+      byId("print-sheet").href = pair.sheet;
+      byId("print-sheet").download = `${pair.id}.pdf`;
+      byId("question").textContent = task.question;
+      byId("choices").replaceChildren(...task.choices.map(choice => {
+        const button = createButton(capital(choice), choice === (locked ? value : selection), () => choose(choice));
+        button.dataset.value = choice;
+        button.disabled = locked;
+        return button;
+      }));
+      byId("check").disabled = selection === null;
+      byId("question-actions").hidden = locked;
+      byId("answer-panel").hidden = !locked;
+      if (locked) {
+        const status = value === null ? "Revealed" : value === task.expected ? "Correct" : "Incorrect";
+        byId("answer-banner").textContent = `${status} · ${capital(task.expected)}`;
+        byId("answer-banner").dataset.status = status.toLowerCase();
+        byId("reveal-image").src = task.reveal;
+        byId("next").textContent = `Go to diagram ${variant === 0 ? 2 : 1}`;
+        renderRecordedReplies(task);
+      }
+      const finished = pair.tasks.filter(entry => answers.has(entry.id)).length;
+      const correct = pair.tasks.filter(entry => answers.get(entry.id) === entry.expected).length;
+      byId("reset").hidden = finished === 0;
+      byId("score-text").textContent = finished === pair.tasks.length
+        ? `${correct}/${finished} correct · ${correct === finished ? "Pair passed" : "Pair missed"}`
+        : finished ? `${correct}/${finished} correct · One diagram left` : "Answer both diagrams to score the pair.";
+    }
+
+    function showResults(visible) {
+      byId("exercise").hidden = visible;
+      byId("results").hidden = !visible;
+      byId("try-tab").setAttribute("aria-pressed", String(!visible));
+      byId("model-tab").setAttribute("aria-pressed", String(visible));
+      if (visible) byId("results-title").focus({preventScroll: true});
+      else byId("try-tab").focus({preventScroll: true});
+    }
+
+    byId("results-description").textContent = data.runs.length
+      ? `Recorded runs for this prototype. Evaluation seed ${data.seed}. Both answers must be correct to pass a pair.`
+      : `This export uses seed ${data.seed}. Recorded model runs for these layouts are unavailable.`;
+    byId("table-card").hidden = data.runs.length === 0;
+    byId("result-rows").replaceChildren(...data.runs.map(run => {
+      const row = document.createElement("tr");
+      const scores = run.scores;
+      const values = [run.dataset === "sample" ? "Signature" : "Held-out", modelName(run), inputName(run.mode),
+        `${scores.correct_items}/${scores.items}`, `${scores.correct_pairs}/${scores.pairs}`, String(scores.parse_error)];
+      for (const value of values) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.append(cell);
+      }
+      return row;
+    }));
+
+    byId("check").addEventListener("click", () => { if (selection !== null) recordAnswer(selection); });
+    byId("unveil").addEventListener("click", () => recordAnswer(null));
+    byId("next").addEventListener("click", () => selectVariant(1 - variant, "question"));
+    byId("reset").addEventListener("click", () => {
+      for (const task of currentPair().tasks) answers.delete(task.id);
+      selectVariant(0, "nav");
+    });
+    function showImage(source, description) {
+      byId("large-diagram").src = source;
+      byId("large-diagram").alt = description;
+      byId("diagram-dialog").setAttribute("aria-label", description);
+      byId("diagram-dialog").showModal();
+    }
+
+    byId("enlarge").addEventListener("click", () => showImage(currentTask().image, "Full size carton drawing"));
+    byId("enlarge-reveal").addEventListener("click", () => showImage(currentTask().reveal, "Full size answer and geometry"));
+    byId("try-tab").addEventListener("click", () => showResults(false));
+    byId("model-tab").addEventListener("click", () => showResults(true));
+    byId("return").addEventListener("click", () => showResults(false));
+    renderTask();
+  </script>
+</body>
+</html>

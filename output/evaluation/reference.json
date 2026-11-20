@@ -1,0 +1,374 @@
+{
+  "dataset": "evaluation",
+  "seed": 2026,
+  "tasks": [
+    {
+      "id": "1c3fe31ccc2b",
+      "pair_id": "carton-02",
+      "task_type": "visibility",
+      "pair_type": "fold-order",
+      "image_sha256": "765eb293f63b0a2df1251cbe9512779fa2fc6f3d27b9e20a56ec43c861d91e40",
+      "allowed_replies": [
+        "yes",
+        "no"
+      ],
+      "case": {
+        "pair_id": "carton-02",
+        "carton": {
+          "width": 44,
+          "depth": 37,
+          "height": 37,
+          "tab": 10,
+          "flap_a": 23,
+          "flap_b": 27,
+          "first_wall": "Back",
+          "base_wall": "Back",
+          "barcode_flap": "B",
+          "barcode": {
+            "x0": 10,
+            "y0": -18,
+            "x1": 34,
+            "y1": -9
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "visibility",
+        "cosmetic": false,
+        "diamond": null,
+        "options": []
+      },
+      "order": [
+        "A",
+        "B"
+      ],
+      "grid_covered_mm2": 0,
+      "answer": "yes",
+      "covered_mm2": 0,
+      "visible_mm2": 216
+    },
+    {
+      "id": "15d178c79d2e",
+      "pair_id": "carton-02",
+      "task_type": "visibility",
+      "pair_type": "fold-order",
+      "image_sha256": "09e956ba70bca83851878cc9d2a62ae82bd3b50c6d38ad8fdb991daff91b07cf",
+      "allowed_replies": [
+        "yes",
+        "no"
+      ],
+      "case": {
+        "pair_id": "carton-02",
+        "carton": {
+          "width": 44,
+          "depth": 37,
+          "height": 37,
+          "tab": 10,
+          "flap_a": 23,
+          "flap_b": 27,
+          "first_wall": "Back",
+          "base_wall": "Back",
+          "barcode_flap": "B",
+          "barcode": {
+            "x0": 10,
+            "y0": -18,
+            "x1": 34,
+            "y1": -9
+          }
+        },
+        "order": [
+          "B",
+          "A"
+        ],
+        "task_type": "visibility",
+        "cosmetic": false,
+        "diamond": null,
+        "options": []
+      },
+      "order": [
+        "B",
+        "A"
+      ],
+      "grid_covered_mm2": 96,
+      "answer": "no",
+      "covered_mm2": 96,
+      "visible_mm2": 120
+    },
+    {
+      "id": "f467b168a8a5",
+      "pair_id": "carton-03",
+      "task_type": "repair",
+      "pair_type": "fold-order",
+      "image_sha256": "f57b2ef33febe997f2ce05db70ab043d3283db6c389c8d37fbc5b7c6f0a4fd5c",
+      "allowed_replies": [
+        "p",
+        "q",
+        "r"
+      ],
+      "case": {
+        "pair_id": "carton-03",
+        "carton": {
+          "width": 41,
+          "depth": 46,
+          "height": 40,
+          "tab": 10,
+          "flap_a": 30,
+          "flap_b": 33,
+          "first_wall": "Left",
+          "base_wall": "Right",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 9,
+            "y0": -23,
+            "x1": 35,
+            "y1": -13
+          }
+        },
+        "order": [
+          "A",
+          "B"
+        ],
+        "task_type": "repair",
+        "cosmetic": false,
+        "diamond": null,
+        "options": [
+          {
+            "label": "Q",
+            "flap": "A",
+            "bounds": {
+              "x0": 55,
+              "y0": -22,
+              "x1": 77,
+              "y1": -16
+            }
+          },
+          {
+            "label": "R",
+            "flap": "B",
+            "bounds": {
+              "x0": 142,
+              "y0": -30,
+              "x1": 164,
+              "y1": -24
+            }
+          },
+          {
+            "label": "P",
+            "flap": "A",
+            "bounds": {
+              "x0": 55,
+              "y0": -3,
+              "x1": 77,
+              "y1": 3
+            }
+          }
+        ]
+      },
+      "answer": "r",
+      "options": {
+        "Q": {
+          "valid": false,
+          "covered_mm2": 132,
+          "grid_covered_mm2": 132
+        },
+        "R": {
+          "valid": true,
+          "covered_mm2": 0,
+          "grid_covered_mm2": 0
+        },
+        "P": {
+          "valid": false,
+          "reason": "crosses crease"
+        }
+      }
+    },
+    {
+      "id": "96ceb1d02d17",
+      "pair_id": "carton-03",
+      "task_type": "repair",
+      "pair_type": "fold-order",
+      "image_sha256": "aed8bd24ce50496ff91c77435a612237c8093c4053b54bdfa2fd2de912d42208",
+      "allowed_replies": [
+        "p",
+        "q",
+        "r"
+      ],
+      "case": {
+        "pair_id": "carton-03",
+        "carton": {
+          "width": 41,
+          "depth": 46,
+          "height": 40,
+          "tab": 10,
+          "flap_a": 30,
+          "flap_b": 33,
+          "first_wall": "Left",
+          "base_wall": "Right",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 9,
+            "y0": -23,
+            "x1": 35,
+            "y1": -13
+          }
+        },
+        "order": [
+          "B",
+          "A"
+        ],
+        "task_type": "repair",
+        "cosmetic": false,
+        "diamond": null,
+        "options": [
+          {
+            "label": "Q",
+            "flap": "A",
+            "bounds": {
+              "x0": 55,
+              "y0": -22,
+              "x1": 77,
+              "y1": -16
+            }
+          },
+          {
+            "label": "R",
+            "flap": "B",
+            "bounds": {
+              "x0": 142,
+              "y0": -30,
+              "x1": 164,
+              "y1": -24
+            }
+          },
+          {
+            "label": "P",
+            "flap": "A",
+            "bounds": {
+              "x0": 55,
+              "y0": -3,
+              "x1": 77,
+              "y1": 3
+            }
+          }
+        ]
+      },
+      "answer": "q",
+      "options": {
+        "Q": {
+          "valid": true,
+          "covered_mm2": 0,
+          "grid_covered_mm2": 0
+        },
+        "R": {
+          "valid": false,
+          "covered_mm2": 132,
+          "grid_covered_mm2": 132
+        },
+        "P": {
+          "valid": false,
+          "reason": "crosses crease"
+        }
+      }
+    },
+    {
+      "id": "7a942738155c",
+      "pair_id": "carton-04",
+      "task_type": "placement",
+      "pair_type": "cosmetic",
+      "image_sha256": "62d1b9d3aeffe8baa4ed7cf047ea98a59450ca6d3e9b33b139febaa73a2a5d2a",
+      "allowed_replies": [
+        "front",
+        "right",
+        "back",
+        "left"
+      ],
+      "case": {
+        "pair_id": "carton-04",
+        "carton": {
+          "width": 47,
+          "depth": 31,
+          "height": 37,
+          "tab": 10,
+          "flap_a": 22,
+          "flap_b": 23,
+          "first_wall": "Right",
+          "base_wall": "Left",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 9,
+            "y0": -23,
+            "x1": 35,
+            "y1": -13
+          }
+        },
+        "order": [
+          "B",
+          "A"
+        ],
+        "task_type": "placement",
+        "cosmetic": false,
+        "diamond": [
+          54,
+          18
+        ],
+        "options": []
+      },
+      "answer": "back",
+      "outward_normal_xy": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "0be59d95462f",
+      "pair_id": "carton-04",
+      "task_type": "placement",
+      "pair_type": "cosmetic",
+      "image_sha256": "5056fcb742e87070ae35268307e159ce45e49d616f51dbc8a37471231ad4b15e",
+      "allowed_replies": [
+        "front",
+        "right",
+        "back",
+        "left"
+      ],
+      "case": {
+        "pair_id": "carton-04",
+        "carton": {
+          "width": 47,
+          "depth": 31,
+          "height": 37,
+          "tab": 10,
+          "flap_a": 22,
+          "flap_b": 23,
+          "first_wall": "Right",
+          "base_wall": "Left",
+          "barcode_flap": "A",
+          "barcode": {
+            "x0": 9,
+            "y0": -23,
+            "x1": 35,
+            "y1": -13
+          }
+        },
+        "order": [
+          "B",
+          "A"
+        ],
+        "task_type": "placement",
+        "cosmetic": true,
+        "diamond": [
+          54,
+          18
+        ],
+        "options": []
+      },
+      "answer": "back",
+      "outward_normal_xy": [
+        0,
+        1
+      ]
+    }
+  ]
+}

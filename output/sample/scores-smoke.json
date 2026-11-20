@@ -1,0 +1,72 @@
+{
+  "source": "synthetic_smoke_test",
+  "model": null,
+  "settings": {
+    "strategy": "always select the first allowed reply for the task type"
+  },
+  "dataset": "sample",
+  "seed": null,
+  "pack_sha256": "f18046d600748f69f2afb9f4cf21cfb96efc3f5ede19797c2483d01073bdf607",
+  "scores": {
+    "items": 2,
+    "correct_items": 1,
+    "item_accuracy": 0.5,
+    "pairs": 1,
+    "correct_pairs": 0,
+    "pair_accuracy": 0.0,
+    "incorrect": 1,
+    "parse_error": 0,
+    "request_error": 0,
+    "missing_reply": 0
+  },
+  "by_task_type": {
+    "visibility": {
+      "items": 2,
+      "correct_items": 1,
+      "item_accuracy": 0.5,
+      "pairs": 1,
+      "correct_pairs": 0,
+      "pair_accuracy": 0.0,
+      "incorrect": 1,
+      "parse_error": 0,
+      "request_error": 0,
+      "missing_reply": 0
+    }
+  },
+  "items": [
+    {
+      "raw_reply": "yes",
+      "id": "4ade74266dec",
+      "pair_id": "carton-01",
+      "pair_type": "fold-order",
+      "task_type": "visibility",
+      "image_sha256": "25caff7284931cbe134527f3914ef132c947cf2ea695568e37588cb7f7fe8f8b",
+      "expected": "yes",
+      "parsed": "yes",
+      "status": "correct"
+    },
+    {
+      "raw_reply": "yes",
+      "id": "ffa4646fc676",
+      "pair_id": "carton-01",
+      "pair_type": "fold-order",
+      "task_type": "visibility",
+      "image_sha256": "1272c94f23fd604a4fedd743f7741b808942f0fd5abf74886029a3aa9d4f2478",
+      "expected": "no",
+      "parsed": "yes",
+      "status": "incorrect"
+    }
+  ],
+  "pairs": [
+    {
+      "pair_id": "carton-01",
+      "task_ids": [
+        "4ade74266dec",
+        "ffa4646fc676"
+      ],
+      "type": "fold-order",
+      "task_type": "visibility",
+      "correct": false
+    }
+  ]
+}

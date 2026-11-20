@@ -1,0 +1,60 @@
+{
+  "dataset": "sample",
+  "seed": null,
+  "same_question_within_pairs": true,
+  "inputs_have_no_embedded_metadata": true,
+  "cover_edge_tolerance_mm": 1,
+  "print_page_mm": [
+    210,
+    297
+  ],
+  "pairs": {
+    "carton-01": {
+      "type": "fold-order",
+      "same_answer": false,
+      "changed_pixel_bounds": [
+        645,
+        1104,
+        1124,
+        1273
+      ],
+      "changes_limited_to_steps": [
+        3,
+        4
+      ],
+      "flat_net_pixel_identical": true
+    }
+  },
+  "geometry": {
+    "hinge_clearance_mm": {
+      "A": 9,
+      "B": 9
+    },
+    "opening_mm2": 1584,
+    "flap_overlap_mm2": 792,
+    "barcode_mm2": 260,
+    "order_checks": [
+      {
+        "order": [
+          "B",
+          "A"
+        ],
+        "grid_covered_mm2": 0,
+        "answer": "yes",
+        "covered_mm2": 0,
+        "visible_mm2": 260
+      },
+      {
+        "order": [
+          "A",
+          "B"
+        ],
+        "grid_covered_mm2": 260,
+        "answer": "no",
+        "covered_mm2": 260,
+        "visible_mm2": 0
+      }
+    ]
+  },
+  "pack_sha256": "f18046d600748f69f2afb9f4cf21cfb96efc3f5ede19797c2483d01073bdf607"
+}
